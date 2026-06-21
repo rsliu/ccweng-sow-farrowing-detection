@@ -294,7 +294,7 @@ device, CUDA/cuDNN, image size, warm-up, iterations and batch size are identical
 
 ## Results
 
-The following tables summarize the principal results reported in Chapter 4.
+The following tables summarize the principal result.
 Classification metrics are the mean results of eight-fold LOPO evaluation.
 Accuracy, Precision, Recall, F1-score and Specificity are reported as percentages.
 
