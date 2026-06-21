@@ -2,14 +2,14 @@
 
 ---
 
-Authors: Chun-Cheng Weng, Ren-Shiou Liu 
+Authors: Chun-Cheng Weng, Ren-Shiou Liu  
 Institute of Information Management, National Cheng Kung University, Tainan, 701401, Taiwan (R.O.C.)
 
 ## Description
 
 Timely recognition of sow farrowing events is important in precision livestock farming, but practical monitoring systems often rely on fixed cameras and limited computational resources. This study formulates the visible emergence of a newborn piglet from the birth canal as frame-level binary classification between `Exposed` and `Not Exposed`.
 
-To address small target regions, occlusion, and illumination variation in surveillance images, this study proposes MSFUNet, a lightweight SqueezeNet-based model with multi-scale feature fusion, bidirectional query scoring, gated residual fusion, and guided pooling. The repository provides a controlled leave-one-pig-out evaluation workflow for measuring recognition performance and computational efficiency on 48,000 labeled images from 8 sows.
+To address small target regions, occlusion, and illumination variation in surveillance images, this study proposes MSFUNet, a lightweight SqueezeNet-based model with multi-scale feature fusion, bidirectional query scoring, gated residual fusion, and guided pooling. The repository provides a leave-one-pig-out evaluation workflow for measuring recognition performance and computational efficiency on 48,000 labeled images from 8 sows.
 
 This repository contains the code used to reproduce six experiments. The experiments are designed to answer:
 
@@ -84,6 +84,8 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 If the output is `True`, PyTorch can access the GPU. Full LOPO training and latency/FPS benchmarking should be run on GPU for practical runtime and comparable efficiency results.
 
+---
+
 ## Dataset
 
 E1–E5 use pig-level LOPO data:
@@ -130,8 +132,7 @@ ccweng-sow-farrowing-detection/
   README.md
 ```
 
-The entry point selects `Dataset/lopo` for E1–E5 and `Dataset/full` for E6. No
-dataset argument is required when these default paths are used.
+The entry point selects `Dataset/lopo` for E1–E5 and `Dataset/full` for E6. No dataset argument is required when these default paths are used.
 
 If the dataset is stored in another location, pass it with `--data_root`:
 
@@ -158,13 +159,17 @@ python train.py \
   --run
 ```
 
+Before training, make sure the dataset paths, ROI configuration, and required output folders are correctly prepared.
+
+---
+
 ## Project Structure
 
 ```text
 ccweng-sow-farrowing-detection/
   train.py                       # Main entry point for all experiment cases
   README.md                      # Setup, experiment, and output guide
-  requirements.txt              # Reference-environment package versions
+  requirements.txt               # Reference-environment package versions
   code/
     models/
       __init__.py                # Public model exports
@@ -181,83 +186,53 @@ ccweng-sow-farrowing-detection/
       seed.py                    # Random seed helpers
     trainers/
       msfunet_ablation/
-        lopo_msfunet_ablation_trainer.py  # Shared E1/E3/E4/E5 LOPO pipeline
+        lopo_msfunet_ablation_trainer.py      # Shared E1/E3/E4/E5 LOPO pipeline
       ex2_backbone_comparison/
-        lopo_squeezenet_baseline_trainer.py  # SqueezeNet comparison
-        lopo_resnet18_trainer.py             # ResNet-18 comparison
-        lopo_vit_tiny_trainer.py             # ViT-Tiny comparison
-        lopo_vit_base_trainer.py             # ViT-Base comparison
+        lopo_squeezenet_baseline_trainer.py   # SqueezeNet comparison
+        lopo_resnet18_trainer.py              # ResNet-18 comparison
+        lopo_vit_tiny_trainer.py              # ViT-Tiny comparison
+        lopo_vit_base_trainer.py              # ViT-Base comparison
         lopo_msanet_trainer.py                # MSANet comparison
       ex6_efficiency/
         benchmark_cnn_models_efficiency.py    # CNN benchmarks
         benchmark_vit_tiny_efficiency.py      # ViT-Tiny benchmark
         benchmark_vit_base_efficiency.py      # ViT-Base benchmark
-        measure_resnet18_efficiency.py         # ResNet-18 measurements
+        measure_resnet18_efficiency.py        # ResNet-18 measurements
     experiments.py               # Experiment cases and paths
-    reproducibility.py           # Dataset preflight and output-status checks
+    reproducibility.py           # Dataset validation and result output helpers
     run.py                       # Command construction and group execution
   config/
-    roi_pig.json                  # Normalized per-pig ROI coordinates
+    roi_pig.json                 # Normalized per-pig ROI coordinates
 ```
+
+---
 
 ## Experimental Protocol
 
-The six experiment groups use two different dataset layouts. They must not be
-interchanged:
+The six experiment groups use two different dataset layouts. They must not be interchanged:
 
 | Experiments | Protocol | Default data root | Required layout |
 |---|---|---|---|
 | E1–E5 | 8-fold leave-one-pig-out (LOPO) | `Dataset/lopo` | `<class>/<pig_id>/<image>` |
 | E6 | Stratified efficiency benchmark | `Dataset/full` | `<class>/<image>` |
 
-The unified entry point selects the correct root automatically. Before printing
-or executing a command it checks the class folders, image counts and, for LOPO,
-the pig folders. A flat dataset therefore cannot accidentally be used for E1–E5.
+The unified entry point selects the correct root automatically. Before printing or executing a command, it checks the class folders, image counts, and, for LOPO experiments, the pig folders. A flat dataset therefore cannot accidentally be used for E1–E5.
 
-The workflow uses the architecture-focused paper protocol by default.
-Its controlled settings include seed 42, 55 epochs, ROI/letterbox preprocessing,
-weighted sampling, EMA, temperature scaling, and threshold selection using only
-the validation split. No test labels are used for model selection or threshold
-tuning. The proposed architecture is evaluated consistently across all relevant
-ablation cases.
+The workflow uses the architecture-focused paper protocol by default. Its controlled settings include seed 42, 55 epochs, ROI/letterbox preprocessing, weighted sampling, EMA, temperature scaling, and threshold selection using only the validation split. No test labels are used for model selection or threshold tuning. The proposed architecture is evaluated consistently across all relevant ablation cases.
 
-The entry point fixes `PYTHONHASHSEED`, enables deterministic PyTorch algorithms,
-disables cuDNN autotuning and TF32 for LOPO training, and sets the cuBLAS
-deterministic workspace configuration. Exact floating-point identity still
-requires the same locked software environment, GPU model, driver, and input data.
+The entry point fixes `PYTHONHASHSEED`, enables deterministic PyTorch algorithms, disables cuDNN autotuning and TF32 for LOPO training, and sets the cuBLAS deterministic workspace configuration. Exact floating-point identity still requires the same locked software environment, GPU model, driver, and input data.
 
-The organized trainers retain the original model and optimization logic.
-Organizational changes are limited to source-reference headers, import-path
-bootstrapping, professional comment typography, explicit output paths, dataset
-preflight validation, and standardized experiment registration.
+The organized trainers retain the original model and optimization logic. Only organizational changes were made, including source-reference headers, import-path setup, explicit output paths, dataset path checking, and standardized experiment registration.
 
-The experiment workflow is self-contained: MSFUNet cases load
-`code/models/factory.py` rather than depending on external development copies
-of the model files.
+The experiment workflow is self-contained: MSFUNet cases load `code/models/factory.py` rather than depending on external development copies of the model files.
 
-Before training, check the configuration and dataset:
-
-```bash
-python train.py --audit
-```
-
-The check summarizes the registered configuration and available outputs. A run
-is `COMPLETE` only when every expected result file exists, contains the required
-metric columns, and includes the minimum fold coverage.
-
-For the current workspace, the entry point automatically prefers `bin/python`
-so the installed experiment environment is used even when the shell has not
-been activated. On another machine, activate the intended environment first.
+A run can be considered complete when the required result files, metric summaries, and fold-level outputs are generated successfully.
 
 ### Metrics and outputs
 
-For binary LOPO experiments, positive class means `Exposed` and each fold writes
-Accuracy, Precision, Recall, F1, Specificity and ROC-AUC. Thresholds are selected
-using validation data and then carried to the held-out test pig. The standard
-outputs are:
+For binary LOPO experiments, the positive class means `Exposed`. Each fold reports Accuracy, Precision, Recall, F1, Specificity, and ROC-AUC. Thresholds are selected using validation data and then carried to the held-out test pig. The standard outputs are:
 
-- per-fold training history and test result: `foldNN_<pig>.csv/.txt` or the
-  backbone trainer's equivalent `lopo_<pig>.csv/.txt`;
+- per-fold training history and test result: `foldNN_<pig>.csv/.txt` or the backbone trainer's equivalent `lopo_<pig>.csv/.txt`;
 - per-pig and merged raw/row-normalized confusion matrices;
 - `summary.csv`, `lopo_summary.csv`, or the trainer-specific summary file;
 - `config.json` and per-pig best/final checkpoints where supported.
@@ -278,16 +253,13 @@ Model/checkpoints/<case_key>/    # Checkpoints
 | E5 | Feature-level selection | Accuracy, Precision, Recall, F1, Specificity, AUC | `python train.py --group E5 --run` |
 | E6 | Efficiency benchmark | Model-specific parameters, latency, FPS, FLOPs, and serialized size | `python train.py --group E6 --run` |
 
-E6 reports parameter count, latency and FPS using the original benchmark method;
-model-specific scripts additionally report their available FLOPs and serialized
-model size. Latency/FPS are hardware measurements and are comparable only when
-device, CUDA/cuDNN, image size, warm-up, iterations and batch size are identical.
+E6 reports parameter count, latency, and FPS using the original benchmark method. Model-specific scripts additionally report their available FLOPs and serialized model size. Latency and FPS are hardware measurements and are comparable only when device, CUDA/cuDNN, image size, warm-up, iterations, and batch size are identical.
+
+---
 
 ## Results
 
-The following tables summarize the principal result.
-Classification metrics are the mean results of eight-fold LOPO evaluation.
-Accuracy, Precision, Recall, F1-score and Specificity are reported as percentages.
+The following tables summarize the principal result. Classification metrics are the mean results of eight-fold LOPO evaluation. Accuracy, Precision, Recall, F1-score, and Specificity are reported as percentages.
 
 ### Classification performance
 
@@ -302,8 +274,7 @@ Accuracy, Precision, Recall, F1-score and Specificity are reported as percentage
 
 ### Model efficiency
 
-Efficiency was measured using single-image inference on an NVIDIA RTX 4080.
-Latency and FPS are hardware-dependent and are intended for relative comparison.
+Efficiency was measured using single-image inference on an NVIDIA RTX 4080. Latency and FPS are hardware-dependent and are intended for relative comparison.
 
 | Model | F1-score | Params (M) | FLOPs (G) | Latency (ms) | FPS | Size (MB) |
 |---|---:|---:|---:|---:|---:|---:|
@@ -313,6 +284,8 @@ Latency and FPS are hardware-dependent and are intended for relative comparison.
 | ViT-Base | 49.36 | 85.8 | 16.863 | 3.180 | 314.45 | 327.44 |
 | MSANet | 67.94 | 1.45 | 0.55 | 1.41 | 710.96 | 5.58 |
 | **MSFUNet** | **72.60** | 2.46 | 0.46 | 1.32 | 755.47 | 9.42 |
+
+---
 
 ## Usage
 
@@ -354,11 +327,13 @@ python train.py --group E1
 python train.py --group E1 --run
 ```
 
-`--group E6` automatically expands the CNN benchmark into `squeezenet`,
-`msanet35`, `msanet53`, and `msfu`, followed by ViT-Tiny, ViT-B, and ResNet-18.
-Use the same GPU and an otherwise idle machine for the entire E6 group.
+`--group E6` automatically expands the CNN benchmark into `squeezenet`, `msanet35`, `msanet53`, and `msfu`, followed by ViT-Tiny, ViT-B, and ResNet-18. Use the same GPU and an otherwise idle machine for the entire E6 group.
 
 If the dataset is placed elsewhere, change `--data_root` to that dataset path.
+
+After completing the experiments, check that the result summaries and fold-level output files have been generated correctly.
+
+---
 
 ## Experiments
 
@@ -485,9 +460,3 @@ python train.py --case E6_resnet18_flops --run
 ```
 
 For strict efficiency comparison, run all efficiency cases on the same device with the same batch size and image size.
-
-After completing the full GPU runs, check the outputs again:
-
-```bash
-python train.py --audit
-```
