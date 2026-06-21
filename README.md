@@ -28,6 +28,7 @@ This repository contains the code used to reproduce six experiments. The experim
 - [Dataset](#dataset)
 - [Project Structure](#project-structure)
 - [Experimental Protocol](#experimental-protocol)
+- [Results](#results)
 - [Usage](#usage)
 - [Experiments](#experiments)
 - [Experiment 1: SqNet, Fusion Only, and MSFUNet Full](#experiment-1-sqnet-fusion-only-and-msfunet-full)
@@ -290,6 +291,37 @@ E6 reports parameter count, latency and FPS using the original benchmark method;
 model-specific scripts additionally report their available FLOPs and serialized
 model size. Latency/FPS are hardware measurements and are comparable only when
 device, CUDA/cuDNN, image size, warm-up, iterations and batch size are identical.
+
+## Results
+
+The following tables summarize the principal results reported in Chapter 4.
+Classification metrics are the mean results of eight-fold LOPO evaluation.
+Accuracy, Precision, Recall, F1-score and Specificity are reported as percentages.
+
+### Classification performance
+
+| Model | Accuracy | Precision | Recall | F1-score | Specificity | AUC |
+|---|---:|---:|---:|---:|---:|---:|
+| SqueezeNet | 63.08 | 61.27 | 74.42 | 64.60 | 51.73 | 0.7170 |
+| ResNet-18 | 56.38 | 54.08 | 39.55 | 39.94 | **73.20** | 0.6167 |
+| ViT-Tiny | 61.70 | 63.99 | 74.63 | 65.90 | 48.77 | 0.6110 |
+| ViT-Base | 52.61 | 42.43 | 62.56 | 49.36 | 42.66 | 0.5330 |
+| MSANet | 63.74 | 61.09 | **82.69** | 67.94 | 44.78 | 0.7208 |
+| **MSFUNet** | **69.98** | **66.79** | 79.44 | **72.60** | 60.52 | **0.7565** |
+
+### Model efficiency
+
+Efficiency was measured using single-image inference on an NVIDIA RTX 4080.
+Latency and FPS are hardware-dependent and are intended for relative comparison.
+
+| Model | F1-score | Params (M) | FLOPs (G) | Latency (ms) | FPS | Size (MB) |
+|---|---:|---:|---:|---:|---:|---:|
+| SqueezeNet | 64.60 | **0.72** | **0.26** | **0.71** | **1409.13** | **2.79** |
+| ResNet-18 | 39.94 | 11.178 | 1.824 | 0.778 | 1285.58 | 42.72 |
+| ViT-Tiny | 65.90 | 5.525 | 1.078 | 2.018 | 495.61 | 21.21 |
+| ViT-Base | 49.36 | 85.8 | 16.863 | 3.180 | 314.45 | 327.44 |
+| MSANet | 67.94 | 1.45 | 0.55 | 1.41 | 710.96 | 5.58 |
+| **MSFUNet** | **72.60** | 2.46 | 0.46 | 1.32 | 755.47 | 9.42 |
 
 ## Usage
 
