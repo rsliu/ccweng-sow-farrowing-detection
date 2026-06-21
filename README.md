@@ -37,7 +37,6 @@ This repository contains the code used to reproduce six experiments. The experim
 - [Experiment 4: Progressive Feature-Level Ablation](#experiment-4-progressive-feature-level-ablation)
 - [Experiment 5: Feature Extraction Level Selection](#experiment-5-feature-extraction-level-selection)
 - [Experiment 6: Model Efficiency and Deployment Feasibility](#experiment-6-model-efficiency-and-deployment-feasibility)
-- [Testing](#testing)
 
 ---
 
@@ -83,7 +82,7 @@ Model training and efficiency benchmarking are intended to run on a CUDA-enabled
 python -c "import torch; print(torch.cuda.is_available())"
 ```
 
-If the output is `True`, PyTorch can access the GPU. Smoke tests can run on CPU, but full LOPO training and latency/FPS benchmarking should be run on GPU for practical runtime and comparable efficiency results.
+If the output is `True`, PyTorch can access the GPU. Full LOPO training and latency/FPS benchmarking should be run on GPU for practical runtime and comparable efficiency results.
 
 ## Dataset
 
@@ -199,13 +198,6 @@ ccweng-sow-farrowing-detection/
     run.py                       # Command construction and group execution
   config/
     roi_pig.json                  # Normalized per-pig ROI coordinates
-  tests/
-    run_smoke_tests.py            # Complete dependency-light smoke suite
-    test_models.py                # Model construction and forward tests
-    test_experiments.py           # Registry and command tests
-    test_output_contracts.py      # Metric filename and schema tests
-    test_reproducibility.py       # Dataset-layout validation tests
-    test_utils.py                 # Shared utility tests
 ```
 
 ## Experimental Protocol
@@ -247,7 +239,6 @@ Before training, check the configuration and dataset:
 
 ```bash
 python train.py --audit
-python tests/run_smoke_tests.py
 ```
 
 The check summarizes the registered configuration and available outputs. A run
@@ -494,22 +485,6 @@ python train.py --case E6_resnet18_flops --run
 ```
 
 For strict efficiency comparison, run all efficiency cases on the same device with the same batch size and image size.
-
-## Testing
-
-Run smoke tests:
-
-```bash
-python tests/run_smoke_tests.py
-```
-
-The smoke tests check:
-
-- forward passes for every model family and all unique registered MSFUNet configurations;
-- shared data, metric, parameter-count, and model-size utilities;
-- all six experiment groups, command construction, and output isolation;
-- expected result filenames and metric columns;
-- LOPO and efficiency dataset layouts, including rejection of a flat dataset for LOPO.
 
 After completing the full GPU runs, check the outputs again:
 
