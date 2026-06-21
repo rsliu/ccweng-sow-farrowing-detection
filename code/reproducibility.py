@@ -77,7 +77,7 @@ def validate_paths(case: ExperimentCase, data_root: str, roi_cfg: str, model_py:
 def _expected_run_outputs(case: ExperimentCase) -> List[Path]:
     root = Path("Result/runs") / case.key
     trainer = case.trainer
-    if trainer == "MSFUNet_experiments/code/trainers/msfunet_ablation/lopo_msfunet_ablation_trainer.py":
+    if trainer == "code/trainers/msfunet_ablation/lopo_msfunet_ablation_trainer.py":
         return [root / "summary.csv"]
     if trainer.endswith("lopo_squeezenet_baseline_trainer.py"):
         return [root / "lopo_test_metrics.csv"]

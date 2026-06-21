@@ -69,7 +69,7 @@ source venv/bin/activate
 Install the main dependencies:
 
 ```bash
-pip install -r MSFUNet_experiments/requirements.txt
+pip install -r requirements.txt
 ```
 
 If the project is already running inside an existing Conda environment, activate that environment instead of creating a new one.
@@ -126,9 +126,8 @@ ccweng-sow-farrowing-detection/
     full/
       exposed/
       not_exposed/
-  MSFUNet_experiments/
-    train.py
-    README.md
+  train.py
+  README.md
 ```
 
 The entry point selects `Dataset/lopo` for E1–E5 and `Dataset/full` for E6. No
@@ -137,7 +136,7 @@ dataset argument is required when these default paths are used.
 If the dataset is stored in another location, pass it with `--data_root`:
 
 ```bash
-python MSFUNet_experiments/train.py \
+python train.py \
   --case E1_msfunet_full \
   --data_root /path/to/Dataset/lopo \
   --run
@@ -146,29 +145,23 @@ python MSFUNet_experiments/train.py \
 The default ROI configuration path is:
 
 ```text
-Model/roi_pig.json
+config/roi_pig.json
 ```
 
-A copied ROI reference file is also stored at:
-
-```text
-MSFUNet_experiments/config/roi_pig.json
-```
-
-If `Model/roi_pig.json` is not available, use the copied ROI file:
+To specify another ROI configuration file:
 
 ```bash
-python MSFUNet_experiments/train.py \
+python train.py \
   --case E1_msfunet_full \
   --data_root Dataset/lopo \
-  --roi_cfg MSFUNet_experiments/config/roi_pig.json \
+  --roi_cfg /path/to/roi_pig.json \
   --run
 ```
 
 ## Project Structure
 
 ```text
-MSFUNet_experiments/
+ccweng-sow-farrowing-detection/
   train.py                       # Main entry point for all experiment cases
   README.md                      # Setup, experiment, and output guide
   requirements.txt              # Reference-environment package versions
@@ -209,10 +202,7 @@ MSFUNet_experiments/
     run_smoke_tests.py            # Complete dependency-light smoke suite
     test_models.py                # Model construction and forward tests
     test_experiments.py           # Registry and command tests
-    test_equivalence.py           # Organized/reference numerical-equivalence tests
     test_output_contracts.py      # Metric filename and schema tests
-    test_provenance.py            # Source consistency tests
-    test_recipes.py               # Recorded-recipe comparison tests
     test_reproducibility.py       # Dataset-layout validation tests
     test_utils.py                 # Shared utility tests
 ```
@@ -224,8 +214,8 @@ interchanged:
 
 | Experiments | Protocol | Default data root | Required layout |
 |---|---|---|---|
-| E1–E5 | 8-fold leave-one-pig-out (LOPO) | `Dataset/lopo` | `<class>/<pig_id>/<image>`; 48,000 images, 8 pigs, 3,000 images per class and pig |
-| E6 | Stratified efficiency benchmark | `Dataset/full` | `<class>/<image>`; 22,474 images in the current workspace |
+| E1–E5 | 8-fold leave-one-pig-out (LOPO) | `Dataset/lopo` | `<class>/<pig_id>/<image>` |
+| E6 | Stratified efficiency benchmark | `Dataset/full` | `<class>/<image>` |
 
 The unified entry point selects the correct root automatically. Before printing
 or executing a command it checks the class folders, image counts and, for LOPO,
@@ -248,15 +238,15 @@ Organizational changes are limited to source-reference headers, import-path
 bootstrapping, professional comment typography, explicit output paths, dataset
 preflight validation, and standardized experiment registration.
 
-The experiment workflow is self-contained within
-`MSFUNet_experiments`: MSFUNet cases load `code/models/factory.py` rather than
-depending on external development copies of the model files.
+The experiment workflow is self-contained: MSFUNet cases load
+`code/models/factory.py` rather than depending on external development copies
+of the model files.
 
 Before training, check the configuration and dataset:
 
 ```bash
-python MSFUNet_experiments/train.py --audit
-python MSFUNet_experiments/tests/run_smoke_tests.py
+python train.py --audit
+python tests/run_smoke_tests.py
 ```
 
 The check summarizes the registered configuration and available outputs. A run
@@ -289,12 +279,12 @@ Model/checkpoints/<case_key>/    # Checkpoints
 
 | Group | Evaluation | Principal metrics | Command |
 |---|---|---|---|
-| E1 | SqNet/Fusion/MSFUNet comparison | Accuracy, Precision, Recall, F1, Specificity, AUC | `python MSFUNet_experiments/train.py --group E1 --run` |
-| E2 | Backbone comparison | Accuracy, Precision, Recall, F1, Specificity, AUC, parameters, latency, FPS | `python MSFUNet_experiments/train.py --group E2 --run` |
-| E3 | Weight-source ablation | Accuracy, Precision, Recall, F1, Specificity, AUC | `python MSFUNet_experiments/train.py --group E3 --run` |
-| E4 | Progressive feature ablation | Accuracy, Precision, Recall, F1, Specificity, AUC | `python MSFUNet_experiments/train.py --group E4 --run` |
-| E5 | Feature-level selection | Accuracy, Precision, Recall, F1, Specificity, AUC | `python MSFUNet_experiments/train.py --group E5 --run` |
-| E6 | Efficiency benchmark | Model-specific parameters, latency, FPS, FLOPs, and serialized size | `python MSFUNet_experiments/train.py --group E6 --run` |
+| E1 | SqNet/Fusion/MSFUNet comparison | Accuracy, Precision, Recall, F1, Specificity, AUC | `python train.py --group E1 --run` |
+| E2 | Backbone comparison | Accuracy, Precision, Recall, F1, Specificity, AUC, parameters, latency, FPS | `python train.py --group E2 --run` |
+| E3 | Weight-source ablation | Accuracy, Precision, Recall, F1, Specificity, AUC | `python train.py --group E3 --run` |
+| E4 | Progressive feature ablation | Accuracy, Precision, Recall, F1, Specificity, AUC | `python train.py --group E4 --run` |
+| E5 | Feature-level selection | Accuracy, Precision, Recall, F1, Specificity, AUC | `python train.py --group E5 --run` |
+| E6 | Efficiency benchmark | Model-specific parameters, latency, FPS, FLOPs, and serialized size | `python train.py --group E6 --run` |
 
 E6 reports parameter count, latency and FPS using the original benchmark method;
 model-specific scripts additionally report their available FLOPs and serialized
@@ -306,13 +296,13 @@ device, CUDA/cuDNN, image size, warm-up, iterations and batch size are identical
 ### List All Experiment Cases
 
 ```bash
-python MSFUNet_experiments/train.py --list
+python train.py --list
 ```
 
 ### Preview an Experiment Command
 
 ```bash
-python MSFUNet_experiments/train.py --case E1_msfunet_full
+python train.py --case E1_msfunet_full
 ```
 
 ### Run an Experiment
@@ -320,10 +310,10 @@ python MSFUNet_experiments/train.py --case E1_msfunet_full
 The default LOPO dataset is selected automatically. Run:
 
 ```bash
-python MSFUNet_experiments/train.py \
+python train.py \
   --case E1_msfunet_full \
   --data_root Dataset/lopo \
-  --roi_cfg Model/roi_pig.json \
+  --roi_cfg config/roi_pig.json \
   --epochs 55 \
   --batch 16 \
   --num_workers 4 \
@@ -335,10 +325,10 @@ Run or preview every registered case in one experiment group:
 
 ```bash
 # Dry run: validates data and prints every E1 command.
-python MSFUNet_experiments/train.py --group E1
+python train.py --group E1
 
 # Execute every E1 case sequentially.
-python MSFUNet_experiments/train.py --group E1 --run
+python train.py --group E1 --run
 ```
 
 `--group E6` automatically expands the CNN benchmark into `squeezenet`,
@@ -362,7 +352,7 @@ Cases:
 Example:
 
 ```bash
-python MSFUNet_experiments/train.py --case E1_msfunet_full --run
+python train.py --case E1_msfunet_full --run
 ```
 
 ### Experiment 2: Backbone Model Comparison
@@ -381,7 +371,7 @@ Cases:
 Example:
 
 ```bash
-python MSFUNet_experiments/train.py --case E2_resnet18_lopo --run
+python train.py --case E2_resnet18_lopo --run
 ```
 
 ### Experiment 3: Weight Source Design
@@ -397,7 +387,7 @@ Cases:
 Example:
 
 ```bash
-python MSFUNet_experiments/train.py --case E3_dual_learnable --run
+python train.py --case E3_dual_learnable --run
 ```
 
 ### Experiment 4: Progressive Feature-Level Ablation
@@ -413,7 +403,7 @@ Cases:
 Example:
 
 ```bash
-python MSFUNet_experiments/train.py --case E4_pool3_pool5_fire9_full --run
+python train.py --case E4_pool3_pool5_fire9_full --run
 ```
 
 ### Experiment 5: Feature Extraction Level Selection
@@ -432,7 +422,7 @@ Cases:
 Example:
 
 ```bash
-python MSFUNet_experiments/train.py --case E5_standard_pool3_pool5_fire9 --run
+python train.py --case E5_standard_pool3_pool5_fire9 --run
 ```
 
 ### Experiment 6: Model Efficiency and Deployment Feasibility
@@ -449,7 +439,7 @@ Cases:
 Run CNN efficiency benchmark:
 
 ```bash
-python MSFUNet_experiments/train.py \
+python train.py \
   --case E6_cnn_models_efficiency \
   --efficiency_model msfu \
   --run
@@ -458,17 +448,17 @@ python MSFUNet_experiments/train.py \
 Run the same case with other CNN comparison models:
 
 ```bash
-python MSFUNet_experiments/train.py --case E6_cnn_models_efficiency --efficiency_model squeezenet --run
-python MSFUNet_experiments/train.py --case E6_cnn_models_efficiency --efficiency_model msanet35 --run
-python MSFUNet_experiments/train.py --case E6_cnn_models_efficiency --efficiency_model msanet53 --run
+python train.py --case E6_cnn_models_efficiency --efficiency_model squeezenet --run
+python train.py --case E6_cnn_models_efficiency --efficiency_model msanet35 --run
+python train.py --case E6_cnn_models_efficiency --efficiency_model msanet53 --run
 ```
 
 Run ViT and ResNet-18 efficiency cases:
 
 ```bash
-python MSFUNet_experiments/train.py --case E6_vit_tiny_efficiency --run
-python MSFUNet_experiments/train.py --case E6_vit_base_efficiency --run
-python MSFUNet_experiments/train.py --case E6_resnet18_flops --run
+python train.py --case E6_vit_tiny_efficiency --run
+python train.py --case E6_vit_base_efficiency --run
+python train.py --case E6_resnet18_flops --run
 ```
 
 For strict efficiency comparison, run all efficiency cases on the same device with the same batch size and image size.
@@ -478,13 +468,12 @@ For strict efficiency comparison, run all efficiency cases on the same device wi
 Run smoke tests:
 
 ```bash
-python MSFUNet_experiments/tests/run_smoke_tests.py
+python tests/run_smoke_tests.py
 ```
 
 The smoke tests check:
 
 - forward passes for every model family and all unique registered MSFUNet configurations;
-- numerical equivalence of representative MSFUNet, SqNet, and MSANet variants to the reference implementations;
 - shared data, metric, parameter-count, and model-size utilities;
 - all six experiment groups, command construction, and output isolation;
 - expected result filenames and metric columns;
@@ -493,5 +482,5 @@ The smoke tests check:
 After completing the full GPU runs, check the outputs again:
 
 ```bash
-python MSFUNet_experiments/train.py --audit
+python train.py --audit
 ```

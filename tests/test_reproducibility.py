@@ -6,8 +6,8 @@ from pathlib import Path
 import sys
 
 
-PROJECT = Path(__file__).resolve().parents[2]
-CODE = PROJECT / "MSFUNet_experiments" / "code"
+PROJECT = Path(__file__).resolve().parents[1]
+CODE = PROJECT / "code"
 sys.path.insert(0, str(CODE))
 
 from experiments import find_case  # noqa: E402

@@ -261,7 +261,7 @@ def main() -> None:
         help="legacy reproduces recorded runs; paper_clean disables TTA/class weighting/quantile mapping/ColorAlign/AdaBN.",
     )
     parser.add_argument("--data_root", type=str, default="", help="Override the case-specific dataset path.")
-    parser.add_argument("--roi_cfg", type=str, default="Model/roi_pig.json")
+    parser.add_argument("--roi_cfg", type=str, default="config/roi_pig.json")
     parser.add_argument("--epochs", type=int, default=55)
     parser.add_argument("--batch", type=int, default=16)
     parser.add_argument("--num_workers", type=int, default=4)

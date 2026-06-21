@@ -32,8 +32,8 @@ class ExperimentCase:
     notes: str = ""
 
 
-GENERIC_TRAINER = "MSFUNet_experiments/code/trainers/msfunet_ablation/lopo_msfunet_ablation_trainer.py"
-UNIFIED_MODEL = "MSFUNet_experiments/code/models/factory.py"
+GENERIC_TRAINER = "code/trainers/msfunet_ablation/lopo_msfunet_ablation_trainer.py"
+UNIFIED_MODEL = "code/models/factory.py"
 
 # Values recorded in the original E1/E3/E4/E5 result config.json files.  Keep
 # them explicit here: changing a model default must not silently change a paper
@@ -119,7 +119,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E2_squeezenet_lopo",
             title="SqueezeNet LOPO backbone baseline",
-            trainer="MSFUNet_experiments/code/trainers/ex2_backbone_comparison/lopo_squeezenet_baseline_trainer.py",
+            trainer="code/trainers/ex2_backbone_comparison/lopo_squeezenet_baseline_trainer.py",
             result_dir="Result/squeezenet_lopo_v1",
             model_dir="Model/squeezenet_lopo_v1",
             existing_result_dir="Result/squeezenet_lopo_v1",
@@ -128,7 +128,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E2_resnet18_lopo",
             title="ResNet-18 LOPO backbone baseline",
-            trainer="MSFUNet_experiments/code/trainers/ex2_backbone_comparison/lopo_resnet18_trainer.py",
+            trainer="code/trainers/ex2_backbone_comparison/lopo_resnet18_trainer.py",
             result_dir="Result/lopo_resnet18",
             model_dir="Model/lopo_resnet18",
             existing_result_dir="Result/lopo_resnet18",
@@ -137,7 +137,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E2_vit_tiny_lopo",
             title="ViT-Tiny LOPO backbone baseline",
-            trainer="MSFUNet_experiments/code/trainers/ex2_backbone_comparison/lopo_vit_tiny_trainer.py",
+            trainer="code/trainers/ex2_backbone_comparison/lopo_vit_tiny_trainer.py",
             result_dir="Result/lopo_vit_timm_unified",
             model_dir="Model/lopo_vit_timm_unified",
             existing_result_dir="Result/lopo_vit_timm_unified",
@@ -146,7 +146,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E2_vit_base_lopo",
             title="ViT-B LOPO backbone baseline",
-            trainer="MSFUNet_experiments/code/trainers/ex2_backbone_comparison/lopo_vit_base_trainer.py",
+            trainer="code/trainers/ex2_backbone_comparison/lopo_vit_base_trainer.py",
             result_dir="Result/vit_lopo_v1",
             model_dir="Model/vit_lopo_v1",
             existing_result_dir="Result/vit_lopo_v1",
@@ -155,7 +155,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E2_msanet_lopo",
             title="MSANet LOPO comparison model",
-            trainer="MSFUNet_experiments/code/trainers/ex2_backbone_comparison/lopo_msanet_trainer.py",
+            trainer="code/trainers/ex2_backbone_comparison/lopo_msanet_trainer.py",
             result_dir="Result/msa_v1",
             model_dir="Model/msa_v1",
             existing_result_dir="Result/msa_v1",
@@ -340,7 +340,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E6_cnn_models_efficiency",
             title="Efficiency benchmark for SqNet, MSANet, and MSFUNet",
-            trainer="MSFUNet_experiments/code/trainers/ex6_efficiency/benchmark_cnn_models_efficiency.py",
+            trainer="code/trainers/ex6_efficiency/benchmark_cnn_models_efficiency.py",
             result_dir="Result/E6_cnn_models",
             model_dir="Model/E6_cnn_models",
             default_data_root="Dataset/full",
@@ -351,7 +351,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E6_vit_tiny_efficiency",
             title="Efficiency benchmark for ViT-Tiny",
-            trainer="MSFUNet_experiments/code/trainers/ex6_efficiency/benchmark_vit_tiny_efficiency.py",
+            trainer="code/trainers/ex6_efficiency/benchmark_vit_tiny_efficiency.py",
             result_dir="Result/E6_vit_tiny",
             model_dir="Model/E6_vit_tiny",
             default_data_root="Dataset/full",
@@ -361,7 +361,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E6_vit_base_efficiency",
             title="Efficiency benchmark for ViT-B",
-            trainer="MSFUNet_experiments/code/trainers/ex6_efficiency/benchmark_vit_base_efficiency.py",
+            trainer="code/trainers/ex6_efficiency/benchmark_vit_base_efficiency.py",
             result_dir="Result/E6_vit_base",
             model_dir="Model/E6_vit_base",
             default_data_root="Dataset/full",
@@ -371,7 +371,7 @@ EXPERIMENTS: Dict[str, List[ExperimentCase]] = {
         ExperimentCase(
             key="E6_resnet18_flops",
             title="FLOPs/size benchmark for ResNet-18",
-            trainer="MSFUNet_experiments/code/trainers/ex6_efficiency/measure_resnet18_efficiency.py",
+            trainer="code/trainers/ex6_efficiency/measure_resnet18_efficiency.py",
             result_dir="Result/E6_resnet18",
             model_dir="Model/E6_resnet18",
             default_data_root="Dataset/full",

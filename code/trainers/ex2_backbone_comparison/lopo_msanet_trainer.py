@@ -4,7 +4,7 @@
 
 import pathlib as _pathlib
 import sys as _sys
-_PROJECT_ROOT = _pathlib.Path(__file__).resolve().parents[4]
+_PROJECT_ROOT = _pathlib.Path(__file__).resolve().parents[3]
 if str(_PROJECT_ROOT) not in _sys.path:
     _sys.path.insert(0, str(_PROJECT_ROOT))
 

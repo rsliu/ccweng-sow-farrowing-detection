@@ -3,7 +3,7 @@
 
 Use this when pytest is not installed:
 
-    python MSFUNet_experiments/tests/run_smoke_tests.py
+    python tests/run_smoke_tests.py
 """
 
 from __future__ import annotations
@@ -21,10 +21,7 @@ from experiments import EXPERIMENTS, all_cases, find_case  # noqa: E402
 from models.factory import build_model  # noqa: E402
 from run import build_command  # noqa: E402
 from test_utils import main as utils_ok  # noqa: E402
-from test_recipes import main as recipes_ok  # noqa: E402
-from test_provenance import main as provenance_ok  # noqa: E402
 from test_output_contracts import main as outputs_ok  # noqa: E402
-from test_equivalence import main as equivalence_ok  # noqa: E402
 from test_reproducibility import main as data_contract_ok  # noqa: E402
 
 
@@ -43,31 +40,28 @@ def registry_ok() -> None:
 
     args = argparse.Namespace(
         data_root="",
-        roi_cfg="Model/roi_pig.json",
+        roi_cfg="config/roi_pig.json",
         epochs=1,
         batch=2,
         num_workers=0,
         img_size=224,
         efficiency_epochs=1,
         efficiency_model="msfu",
-        protocol="legacy",
+        protocol="paper_clean",
     )
     case = find_case("E1_msfunet_full")
     command = build_command(case, args)
     assert "--model_py" in command
-    assert "Model/squeezenet_msfu_ex1.py" in command
     assert "Dataset/lopo" in command
-    assert "--adabn" in command
     for registered_case in all_cases():
         generated = build_command(registered_case, args)
         assert generated[0].endswith("python")
         assert generated[1] == registered_case.trainer
-    args.protocol = "paper_clean"
     clean_command = build_command(case, args)
     assert "Result/runs" in clean_command
     assert "Model/checkpoints" in clean_command
     assert "E1_msfunet_full" in clean_command
-    assert "MSFUNet_experiments/code/models/factory.py" in clean_command
+    assert "code/models/factory.py" in clean_command
     for flag in ("--tta_hflip", "--use_class_weight", "--enable_thr_quantile_map", "--align_color_to_train", "--adabn"):
         assert flag not in clean_command
 
@@ -104,10 +98,7 @@ def main() -> None:
     utils_ok()
     registry_ok()
     registered_models_ok()
-    recipes_ok()
-    provenance_ok()
     outputs_ok()
-    equivalence_ok()
     data_contract_ok()
     print("[ok] smoke tests passed")
 

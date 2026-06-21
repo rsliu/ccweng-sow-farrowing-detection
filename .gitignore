@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+
+# Local datasets and generated experiment artifacts
+Dataset/
+Result/
+Model/
+
+# Local virtual environments
+.venv/
+venv/

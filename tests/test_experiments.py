@@ -17,7 +17,7 @@ from run import build_command  # noqa: E402
 def _args():
     return argparse.Namespace(
         data_root="",
-        roi_cfg="Model/roi_pig.json",
+        roi_cfg="config/roi_pig.json",
         epochs=1,
         batch=2,
         num_workers=0,
@@ -47,7 +47,7 @@ def test_find_case_and_build_generic_command():
 def test_build_backbone_command():
     case = find_case("E2_resnet18_lopo")
     command = build_command(case, _args())
-    assert "MSFUNet_experiments/code/trainers/ex2_backbone_comparison/lopo_resnet18_trainer.py" in command
+    assert "code/trainers/ex2_backbone_comparison/lopo_resnet18_trainer.py" in command
     assert "--path_d" in command
 
 
@@ -66,6 +66,6 @@ def test_paper_clean_disables_auxiliary_options():
     assert "Result/runs" in command
     assert "Model/checkpoints" in command
     assert "E1_msfunet_full" in command
-    assert "MSFUNet_experiments/code/models/factory.py" in command
+    assert "code/models/factory.py" in command
     for flag in ("--tta_hflip", "--use_class_weight", "--enable_thr_quantile_map", "--align_color_to_train", "--adabn"):
         assert flag not in command
